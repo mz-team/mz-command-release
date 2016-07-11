@@ -3,6 +3,7 @@ var watch = require('./lib/watch.js');
 var release = require('./lib/release.js');
 var deploy = require('./lib/deploy.js');
 var livereload = require('./lib/livereload.js');
+var weinre = require('./lib/weinre.js');
 var time = require('./lib/time.js');
 
 exports.name = 'release [media name]';
@@ -12,6 +13,7 @@ exports.options = {
   '-d, --dest <path>': 'release output destination',
   '-l, --lint': 'with lint',
   '-w, --watch': 'monitor the changes of project',
+  '-W, --weinre <user>': 'start weinre server and debug',
   '-L, --live': 'automatically reload your browser',
   '-c, --clean': 'clean compile cache',
   '-u, --unique': 'use unique compile caching',
@@ -34,6 +36,7 @@ exports.run = function(argv, cli, env) {
   var options = {
     dest: argv.dest || argv.d || 'preview',
     watch: !!(argv.watch || argv.w),
+    weinre: argv.weinre || argv.W ,
     live: !!(argv.live || argv.L),
     clean: !!(argv.clean || argv.c),
     unique: !!(argv.unique || argv.u),
@@ -74,6 +77,9 @@ exports.run = function(argv, cli, env) {
   // 处理 livereload 脚本
   app.use(livereload.handleReloadComment);
 
+  // 处理 weinre 脚本
+  app.use(weinre.handleWeinreComment);
+
   // deliver
   app.use(function(info, next) {
     fis.log.debug('deploy start');
@@ -94,7 +100,7 @@ function validate(argv) {
     fis.log.error('Unregconized `%s`, please run `%s release --help`', argv._.slice(2).join(' '), fis.cli.name);
   }
 
-  var allowed = ['_', 'dest', 'd', 'lint', 'l', 'watch', 'w', 'live', 'L', 'clean', 'c', 'unique', 'u', 'verbose', 'color', 'root', 'r', 'f', 'file', 'child-flag'];
+  var allowed = ['_', 'dest', 'd', 'lint', 'l', 'watch', 'w', 'live', 'L', 'clean', 'c', 'unique', 'u', 'verbose', 'color', 'root', 'r', 'f', 'file', 'child-flag', 'weinre', 'W'];
 
   Object.keys(argv).forEach(function(k) {
     if (!~allowed.indexOf(k)) {
