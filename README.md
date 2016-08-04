@@ -1,6 +1,6 @@
 # mz-command-release
 
-基于 fis3-command-release 修改，增加 -W 参数以支持 weinre 调试
+基于 fis3-command-release 修改，增加 -W 参数以支持 weinre 调试，增加 beforeRelease/afterRelease hook 便于任务订制。
 
 ## Usage
 

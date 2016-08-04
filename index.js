@@ -36,7 +36,7 @@ exports.run = function(argv, cli, env) {
   var options = {
     dest: argv.dest || argv.d || 'preview',
     watch: !!(argv.watch || argv.w),
-    weinre: argv.weinre || argv.W ,
+    weinre: !!(argv.weinre || argv.W) ,
     live: !!(argv.live || argv.L),
     clean: !!(argv.clean || argv.c),
     unique: !!(argv.unique || argv.u),
@@ -48,6 +48,18 @@ exports.run = function(argv, cli, env) {
   options.live && (options.watch = true);
 
   var app = require('./lib/chains.js')();
+
+  options.env = argv._.length === 2 ? argv._[1]:'';
+
+  // before release hook
+  app.use(function(options, next) {
+    if(typeof fis.beforeRelease === 'function'){
+      fis.beforeRelease(options, next);
+    }else{
+      next(null, options);
+    }
+  });
+
 
   app.use(function(options, next) {
 
@@ -90,6 +102,15 @@ exports.run = function(argv, cli, env) {
   });
 
   options.live && app.use(livereload.checkReload);
+
+  // after release hook
+  app.use(function(options, next) {
+    if(typeof fis.afterRelease === 'function'){
+      fis.afterRelease(options, next);
+    }else{
+      next(null, options);
+    }
+  });
 
   // run it.
   app.run(options);
