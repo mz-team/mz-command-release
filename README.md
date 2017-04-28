@@ -14,3 +14,4 @@
        -c, --clean            clean compile cache
        -u, --unique           use unique compile caching
        -W, --weinre <user>    start weinre server and debug
+       -m, --message          release message

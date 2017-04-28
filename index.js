@@ -19,6 +19,7 @@ exports.options = {
   '-u, --unique': 'use unique compile caching',
   '-r, --root <path>': 'specify project root',
   '-f, --file <filename>': 'specify the file path of `fis-conf.js`',
+  '-m, --message': 'release message',
   '--no-color': 'disable colored output',
   '--verbose': 'enable verbose mode'
 };
@@ -36,11 +37,12 @@ exports.run = function(argv, cli, env) {
   var options = {
     dest: argv.dest || argv.d || 'preview',
     watch: !!(argv.watch || argv.w),
-    weinre: !!(argv.weinre || argv.W) ,
+    weinre: !!(argv.weinre || argv.W),
     live: !!(argv.live || argv.L),
     clean: !!(argv.clean || argv.c),
     unique: !!(argv.unique || argv.u),
     useLint: !!(argv.lint || argv.l),
+    message: !!(argv.message || argv.m),
     verbose: !!argv.verbose
   };
 
@@ -121,7 +123,7 @@ function validate(argv) {
     fis.log.error('Unregconized `%s`, please run `%s release --help`', argv._.slice(2).join(' '), fis.cli.name);
   }
 
-  var allowed = ['_', 'dest', 'd', 'lint', 'l', 'watch', 'w', 'live', 'L', 'clean', 'c', 'unique', 'u', 'verbose', 'color', 'root', 'r', 'f', 'file', 'child-flag', 'weinre', 'W'];
+  var allowed = ['_', 'dest', 'd', 'lint', 'l', 'watch', 'w', 'live', 'L', 'clean', 'c', 'unique', 'u', 'verbose', 'color', 'root', 'r', 'f', 'm', 'file', 'child-flag', 'weinre', 'W'];
 
   Object.keys(argv).forEach(function(k) {
     if (!~allowed.indexOf(k)) {
