@@ -42,7 +42,7 @@ exports.run = function(argv, cli, env) {
     clean: !!(argv.clean || argv.c),
     unique: !!(argv.unique || argv.u),
     useLint: !!(argv.lint || argv.l),
-    message: !!(argv.message || argv.m),
+    message: argv.message || argv.m,
     verbose: !!argv.verbose
   };
 

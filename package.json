@@ -1,7 +1,7 @@
 {
   "name": "mz-command-release",
   "description": "mz release command.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "kaiye",
   "homepage": "https://github.com/mz-team/mz-command-release#readme",
   "keywords": [
