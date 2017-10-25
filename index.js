@@ -1,10 +1,12 @@
 var _ = fis.util;
+var path = require('path');
 var watch = require('./lib/watch.js');
 var release = require('./lib/release.js');
 var deploy = require('./lib/deploy.js');
 var livereload = require('./lib/livereload.js');
 var weinre = require('./lib/weinre.js');
 var time = require('./lib/time.js');
+var checkIgnore = require('./lib/checkignore.js');
 
 exports.name = 'release [media name]';
 exports.desc = 'build and deploy your project';
@@ -105,6 +107,29 @@ exports.run = function(argv, cli, env) {
 
   options.live && app.use(livereload.checkReload);
 
+  // output fix
+  if (_.is(options['dest'], 'String')) {
+    var root = fis.project.getProjectPath();
+    var dest = path.resolve(root, options['dest']);
+    var isInRoot = dest.indexOf(root) === 0;
+
+    if (isInRoot && !checkIgnore(dest.substring(root.length)) && _.exists(dest)) {
+      fis.log.warn('skip `output` directory: ' + dest);
+
+      // maybe fis.set('project.ignore', 'node_modules/**');
+      if (!_.is(fis.get('project.ignore'), 'Array')) {
+        fis.set('project.ignore', [fis.get('project.ignore')]);
+      }
+
+      fis.set(
+        'project.ignore',
+        fis.get('project.ignore').concat(
+          [dest.replace(root + '/', '') + '/**']
+        )
+      );
+    }
+  }
+  
   // after release hook
   app.use(function(options, next) {
     if(typeof fis.afterRelease === 'function'){
@@ -113,7 +138,6 @@ exports.run = function(argv, cli, env) {
       next(null, options);
     }
   });
-
   // run it.
   app.run(options);
 };
